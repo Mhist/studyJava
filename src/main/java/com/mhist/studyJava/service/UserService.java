@@ -14,4 +14,6 @@ public interface UserService {
     User findById(Integer id);
 
     List<User> findAll();
+
+    User createUser(User user);
 }

@@ -3,7 +3,6 @@ package com.mhist.studyJava.service.impl;
 import com.mhist.studyJava.mapper.UserMapper;
 import com.mhist.studyJava.pojo.User;
 import com.mhist.studyJava.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,5 +27,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAll(){
         return userMapper.findAll();
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public User createUser(User user) {
+        userMapper.createUser(user);
+        return user;
     }
 }
