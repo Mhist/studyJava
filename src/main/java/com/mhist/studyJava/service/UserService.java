@@ -6,14 +6,8 @@ import java.util.List;
 
 public interface UserService {
 
+    User findByUsername(String username);
 
-    /**
-     * @param id
-     * @return
-     */
-    User findById(Integer id);
+    void register(String username, String password);
 
-    List<User> findAll();
-
-    User createUser(User user);
 }
