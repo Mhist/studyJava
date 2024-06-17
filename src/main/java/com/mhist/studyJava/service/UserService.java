@@ -12,4 +12,6 @@ public interface UserService {
     void update(User user);
 
     void updateAvatar(String avatar);
+
+    void updatePassword(String newPassword);
 }

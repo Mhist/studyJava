@@ -8,7 +8,9 @@ import com.mhist.studyJava.pojo.User;
 import com.mhist.studyJava.service.UserService;
 import com.mhist.studyJava.utils.ThreadlocalUtil;
 import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +33,13 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    private User getUser() {
+        JWTPayload payload = ThreadlocalUtil.get();
+        String username = (String) payload.getClaim("username");
+        User user = userService.findByUsername(username);
+        return user;
     }
 
     @PostMapping("/register")
@@ -88,9 +97,7 @@ public class UserController {
 
     @GetMapping("/userInfo")
     public  Result<User> getUserInfo(@RequestHeader(name="Authorization") String token){
-        JWTPayload payload = ThreadlocalUtil.get();
-        String username = (String) payload.getClaim("username");
-        User user = userService.findByUsername(username);
+        User user = getUser();
         return Result.success(user);
     }
 
@@ -103,9 +110,35 @@ public class UserController {
     }
 
     @PatchMapping("/updateAvatar")
-    public Result updateAvatar(@RequestParam  String avatar){
+    public Result updateAvatar(@RequestParam @URL String avatar){
         userService.updateAvatar(avatar);
         return Result.success();
     }
+
+    @PatchMapping("/updatePassword")
+    public Result updatePassword(@RequestBody Map<String,String> params){
+        String oldPassword = params.get("oldPassword");
+        String newPassword = params.get("newPassword");
+        String rePassword = params.get("rePassword");
+        Boolean anyOneIsEmpty = !StringUtils.hasLength(oldPassword) ||  !StringUtils.hasLength(oldPassword) ||  !StringUtils.hasLength(rePassword);
+        if(anyOneIsEmpty){
+            return Result.error("缺少必要的参数");
+        }
+        User user = getUser();
+        // 老密码与原来的密码一致的话
+        if(Objects.equals(SecureUtil.md5(oldPassword), user.getPassword())){
+            if(newPassword.equals(rePassword)){
+                String newPasswordMd5 = SecureUtil.md5(newPassword);
+                userService.updatePassword(newPasswordMd5);
+                return Result.success();
+            }else {
+                return Result.error("新密码与确认密码不一致");
+            }
+        }
+
+        return Result.error("旧密码不正确");
+    }
+
+
 
 }

@@ -55,4 +55,16 @@ public class UserServiceImpl implements UserService {
         Integer ID = Integer.valueOf(String.valueOf(id));
         userMapper.updateAvatar(avatar,ID );
     }
+
+    /**
+     * @param newPassword
+     */
+    @Override
+    public void updatePassword(String newPassword) {
+        JWTPayload payload = ThreadlocalUtil.get();
+        NumberWithFormat id = (NumberWithFormat) payload.getClaim("id");
+        System.out.println(id);
+        Integer ID = Integer.valueOf(String.valueOf(id));
+        userMapper.updatePassword(newPassword,ID);
+    }
 }
