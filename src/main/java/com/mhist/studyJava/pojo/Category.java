@@ -8,7 +8,7 @@ public class Category {
     private Integer id;
     private String categoryName;
     private String categoryAlias;
-    private String createUser;
+    private Integer createUser;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

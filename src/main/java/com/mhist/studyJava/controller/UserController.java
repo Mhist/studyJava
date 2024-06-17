@@ -2,7 +2,6 @@ package com.mhist.studyJava.controller;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTPayload;
-import cn.hutool.jwt.JWTUtil;
 import com.mhist.studyJava.pojo.Result;
 import com.mhist.studyJava.pojo.User;
 import com.mhist.studyJava.service.UserService;
@@ -35,7 +34,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    private User getUser() {
+    public  User getUser() {
         JWTPayload payload = ThreadlocalUtil.get();
         String username = (String) payload.getClaim("username");
         User user = userService.findByUsername(username);
