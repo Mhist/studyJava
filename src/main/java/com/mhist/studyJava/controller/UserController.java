@@ -101,4 +101,11 @@ public class UserController {
         userService.update(user);
         return Result.success();
     }
+
+    @PatchMapping("/updateAvatar")
+    public Result updateAvatar(@RequestParam  String avatar){
+        userService.updateAvatar(avatar);
+        return Result.success();
+    }
+
 }
