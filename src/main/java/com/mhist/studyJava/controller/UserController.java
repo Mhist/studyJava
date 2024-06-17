@@ -1,14 +1,18 @@
 package com.mhist.studyJava.controller;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.jwt.JWT;
+import cn.hutool.jwt.JWTPayload;
+import cn.hutool.jwt.JWTUtil;
 import com.mhist.studyJava.pojo.Result;
 import com.mhist.studyJava.pojo.User;
 import com.mhist.studyJava.service.UserService;
+import com.mhist.studyJava.utils.ThreadlocalUtil;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +36,6 @@ public class UserController {
     @PostMapping("/register")
     public Result register(@Pattern(regexp = "^\\S{5,16}$",message = "用户名长度应该在5-16字符之间") String username,@Pattern(regexp = "^\\S{5,16}$",message = "密码长度应该在5-16字符之间") String password) {
         // 校验 :使用全局异常处理器处理参数校验失败的异常
-
         // 查询用户
         User user = userService.findByUsername(username);
         if(user == null){
@@ -82,4 +85,20 @@ public class UserController {
 
     }
 
+
+    @GetMapping("/userInfo")
+    public  Result<User> getUserInfo(@RequestHeader(name="Authorization") String token){
+        JWTPayload payload = ThreadlocalUtil.get();
+        String username = (String) payload.getClaim("username");
+        User user = userService.findByUsername(username);
+        return Result.success(user);
+    }
+
+    @PutMapping("/update")
+    public Result update(@RequestBody  @Validated User user){
+        // 修改更新时间
+        user.setUpdateTime(LocalDateTime.now());
+        userService.update(user);
+        return Result.success();
+    }
 }

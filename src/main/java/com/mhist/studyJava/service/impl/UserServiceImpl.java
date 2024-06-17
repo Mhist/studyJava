@@ -35,4 +35,9 @@ public class UserServiceImpl implements UserService {
         String md5Password = SecureUtil.md5(password);
         userMapper.register(username, md5Password);
     }
+
+    @Override
+    public void update(User user) {
+        userMapper.update(user);
+    }
 }
