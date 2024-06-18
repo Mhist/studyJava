@@ -18,7 +18,7 @@ public class CategoryController {
     }
 
     @PostMapping("/createCategory")
-    public Result createCategory(@RequestBody Category category){
+    public Result createCategory(@RequestBody @Validated(Category.Add.class) Category category){
         categoryService.createCategory(category);
         return Result.success();
     }
@@ -38,7 +38,7 @@ public class CategoryController {
 
 
     @PutMapping("/updateCategory")
-    public Result updateCategory(@RequestBody @Validated Category category){
+    public Result updateCategory(@RequestBody @Validated(Category.Update.class) Category category){
         categoryService.updateCategory(category);
         return Result.success();
     }
