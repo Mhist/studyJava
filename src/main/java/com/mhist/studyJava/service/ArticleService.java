@@ -7,4 +7,6 @@ import java.util.List;
 public interface ArticleService {
 
     List<Article> getList();
+
+    void add(Article article);
 }
