@@ -1,8 +1,11 @@
 package com.mhist.studyJava.service.impl;
 
 import cn.hutool.jwt.JWTPayload;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.mhist.studyJava.mapper.ArticleMapper;
 import com.mhist.studyJava.pojo.Article;
+import com.mhist.studyJava.pojo.PageBean;
 import com.mhist.studyJava.pojo.User;
 import com.mhist.studyJava.service.ArticleService;
 import com.mhist.studyJava.service.UserService;
@@ -29,10 +32,6 @@ public  class ArticleServiceImpl implements ArticleService {
         this.articleMapper = articleMapper;
         this.userService = userService;
     }
-    @Override
-    public List<Article> getList(){
-        return articleMapper.getList();
-    }
 
     /**
      *
@@ -44,5 +43,27 @@ public  class ArticleServiceImpl implements ArticleService {
         articleMapper.add(article);
     }
 
-    ;
+    /**
+     * @param pageNum
+     * @param pageSize
+     * @param categoryId
+     * @param state
+     * @return
+     */
+    @Override
+    public PageBean<Article> getList(Integer pageNum, Integer pageSize, Integer categoryId, String state) {
+        // 创建page bean对象、
+        PageBean<Article> pb = new PageBean<>();
+        User user = getUser();
+        Integer userId = user.getId();
+        // 开启分页查询 pagehelper
+        PageHelper.startPage(pageNum,pageSize);
+        List<Article> list = articleMapper.getList(userId,categoryId,state);
+        pb.setItems(list);
+        pb.setTotal(list.size());
+        return pb;
+
+    }
+
+    
 }

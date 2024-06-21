@@ -1,11 +1,10 @@
 package com.mhist.studyJava.controller;
 import com.mhist.studyJava.pojo.Article;
+import com.mhist.studyJava.pojo.PageBean;
 import com.mhist.studyJava.pojo.Result;
 import com.mhist.studyJava.service.ArticleService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/article")
@@ -17,9 +16,12 @@ public class ArticleController {
         this.articleService = articleService;
     }
     @GetMapping("/list")
-    public static Result getList(){
-        List<Article> articleList = articleService.getList();
-        return Result.success(articleList);
+    public Result<PageBean<Article>> getList(Integer pageNum,
+                                             Integer pageSize,
+                                             @RequestParam(required = false) Integer categoryId,
+                                             @RequestParam(required = false) String state){
+       PageBean<Article> pageBean = articleService.getList(pageNum,pageSize,categoryId,state);
+        return Result.success(pageBean);
     }
 
     @PostMapping("/add")
@@ -27,5 +29,7 @@ public class ArticleController {
         articleService.add(article);
         return Result.success();
     }
+
+
 
 }

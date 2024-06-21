@@ -1,12 +1,11 @@
 package com.mhist.studyJava.service;
 
 import com.mhist.studyJava.pojo.Article;
-
-import java.util.List;
+import com.mhist.studyJava.pojo.PageBean;
 
 public interface ArticleService {
 
-    List<Article> getList();
-
     void add(Article article);
+
+    PageBean<Article> getList(Integer pageNum, Integer pageSize, Integer categoryId, String state);
 }
