@@ -6,6 +6,11 @@ spring:
     username: root
     password: admin123
     driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      # 设置传输大小
+      max-file-size: 2048MB
+      max-request-size: 2048MB
 server:
     port: 8888
 
@@ -14,5 +19,12 @@ token:
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
+
+minio:
+  endpoint: http://119.91.213.59:9000
+  apiIP: http://119.91.213.59:9001
+  accessKey: ipNwUYoB7cz7ABHEOgCL
+  secretKey: ZE6dOTog1TehM4poyCQQnZADUr0nr9ncIRxqGCV2
+  bucketName: mhist
 
 
