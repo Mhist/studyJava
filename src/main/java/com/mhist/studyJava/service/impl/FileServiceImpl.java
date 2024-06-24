@@ -72,6 +72,7 @@ public class FileServiceImpl implements FileService {
                         .bucket(bucketName)
                         .object(file.getOriginalFilename())
                         .expiry(7, TimeUnit.DAYS)
+
                         .build());
 
 //        http://119.91.213.59:9001/api/v1/buckets/mhist/objects/download?

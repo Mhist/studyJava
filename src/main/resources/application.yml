@@ -21,8 +21,8 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
 
 minio:
-  endpoint: http://119.91.213.59:9000
-  apiIP: http://119.91.213.59:9001
+  endpoint: https://119.91.213.59:9000
+  apiIP: https://119.91.213.59:9001
   accessKey: ipNwUYoB7cz7ABHEOgCL
   secretKey: ZE6dOTog1TehM4poyCQQnZADUr0nr9ncIRxqGCV2
   bucketName: mhist
