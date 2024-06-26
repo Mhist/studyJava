@@ -9,6 +9,7 @@ import com.mhist.studyJava.utils.ThreadlocalUtil;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +31,11 @@ public class UserController {
     private String tokenKey;
     private UserService userService;
 
-    public UserController(UserService userService) {
+    private RedisTemplate redisTemplate;
+
+    public UserController(UserService userService, RedisTemplate redisTemplate) {
         this.userService = userService;
+        this.redisTemplate = redisTemplate;
     }
 
     public  User getUser() {
@@ -84,6 +88,7 @@ public class UserController {
                         .sign();
                 Map<String, String> data = new HashMap<>();
                 data.put("token", token);
+                redisTemplate.opsForValue().set("token", token);
 
                 return Result.success(data);
             }else {
@@ -129,6 +134,7 @@ public class UserController {
             if(newPassword.equals(rePassword)){
                 String newPasswordMd5 = SecureUtil.md5(newPassword);
                 userService.updatePassword(newPasswordMd5);
+                redisTemplate.opsForValue().set("token", null);
                 return Result.success();
             }else {
                 return Result.error("新密码与确认密码不一致");
