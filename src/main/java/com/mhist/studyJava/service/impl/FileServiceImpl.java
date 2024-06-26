@@ -8,6 +8,7 @@ import io.minio.*;
 import io.minio.errors.*;
 import io.minio.http.Method;
 import okhttp3.Headers;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -87,19 +88,7 @@ public class FileServiceImpl implements FileService {
         System.out.println(headers);
         String version_id = headers.get("x-amz-version-id");
 
-        Map<String, String> queryMap = new HashMap<>();
-        queryMap.put("preview", "true");
-        queryMap.put("prefix", file.getOriginalFilename());
-        queryMap.put("version_id",version_id);
-
-        // 转换为MultiValueMap
-        LinkedMultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
-
-        for (Map.Entry<String, String> entry : queryMap.entrySet()) {
-            // 将单个值放入集合中，即使目前只有一个值，这样可以保持与MultiValueMap的接口一致
-            multiValueMap.add(entry.getKey(), entry.getValue());
-            // 如果原始Map中某个键已经有多个值，你可以通过multiValueMap.addAll(key, Collections.singletonList(value))来添加
-        }
+        LinkedMultiValueMap<String, String> multiValueMap = getStringStringLinkedMultiValueMap(file, version_id);
 
         // 使用UriComponentsBuilder将Map转换为查询字符串
         String queryString = UriComponentsBuilder.newInstance()
@@ -111,5 +100,23 @@ public class FileServiceImpl implements FileService {
         System.out.println(queryString);
         String previewUrl = apiIP + "/api/v1/buckets/" + bucketName + "/objects/download?" + queryString;
         return previewUrl;
+    }
+
+    @NotNull
+    private static LinkedMultiValueMap<String, String> getStringStringLinkedMultiValueMap(MultipartFile file, String version_id) {
+        Map<String, String> queryMap = new HashMap<>();
+        queryMap.put("preview", "true");
+        queryMap.put("prefix", file.getOriginalFilename());
+        queryMap.put("version_id", version_id);
+
+        // 转换为MultiValueMap
+        LinkedMultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+
+        for (Map.Entry<String, String> entry : queryMap.entrySet()) {
+            // 将单个值放入集合中，即使目前只有一个值，这样可以保持与MultiValueMap的接口一致
+            multiValueMap.add(entry.getKey(), entry.getValue());
+            // 如果原始Map中某个键已经有多个值，你可以通过multiValueMap.addAll(key, Collections.singletonList(value))来添加
+        }
+        return multiValueMap;
     }
 }
